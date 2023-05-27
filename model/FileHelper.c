@@ -5,7 +5,7 @@
 #include "stdlib.h"
 #include "../controller/ComputerNetworkGraph.h"
 
-/*ResponsesTypes readFile(char *fileName, char ***outputString, int *outputStringLen) {
+/*Responses readFile(char *fileName, char ***outputString, int *outputStringLen) {
     FILE *fp;
 
     char *prefix = strdup("files/");
@@ -47,7 +47,7 @@
     return SUCCESS_RESPONSE;
 }
 
-ResponsesTypes getTreeFromString(char **stringArray, int stringArrayLen, ScapeGoatTree *tree) {
+Responses getTreeFromString(char **stringArray, int stringArrayLen, ScapeGoatTree *tree) {
 
     //
     return SUCCESS_RESPONSE;

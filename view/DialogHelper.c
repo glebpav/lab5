@@ -1,20 +1,19 @@
 #include <stdio.h>
 #include <string.h>
 #include "../Utils.h"
-#include "ResponsesHandler.h"
 
 int getExitOperationIdx() {
-    return 9;
+    return 7;
 }
 
 int selectOperation(const char *commandsMessages[], int countOfMessages) {
     int userInput;
     printf("\n");
-    printf(" +------------------------------------------+\n");
+    printf(" +-----------------------------------------------+\n");
     for (int i = 0; i < countOfMessages; ++i) {
-        printf(" | %s ", commandsMessages[i]);
-        printf("%.*s|\n", 40 - strlen(commandsMessages[i]), "                                                     ");
-        printf(" +------------------------------------------+\n");
+        printf(" | %d. %s ", i + 1, commandsMessages[i]);
+        printf("%.*s|\n", 42 - strlen(commandsMessages[i]), "                                                     ");
+        printf(" +-----------------------------------------------+\n");
     }
     printf("\nSelect one command out of given:\n>> ");
     do {

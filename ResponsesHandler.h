@@ -14,13 +14,14 @@ typedef enum ResponsesTypes {
     FILE_EXCEPTION,
     EMPTY_FIELD_EXCEPTION,
     SUCCESS_RESPONSE,
+    RETURN_BACK_RESPONSE,
     EXIT_RESPONSE
-} ResponsesTypes;
+} Responses;
 
-bool isException(ResponsesTypes response);
-char *getResponseMessage(ResponsesTypes responsesTypes);
-void throughException(ResponsesTypes exceptions);
-void printSuccessMessage(ResponsesTypes response);
+bool isException(Responses response);
+char *getResponseMessage(Responses responsesTypes);
+void throughException(Responses exceptions);
+void printSuccessMessage(Responses response);
 
 
 #endif //LAB4A_RESPONSESHANDLER_H

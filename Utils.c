@@ -2,7 +2,7 @@
 #include <string.h>
 #include "Utils.h"
 #include "stdio.h"
-#include "view/ResponsesHandler.h"
+#include "ResponsesHandler.h"
 
 int getInt(int *var) {
     int clearBuffer, res = scanf("%d", var);
@@ -43,13 +43,13 @@ char *getLine(void) {
     return linep;
 }
 
-ResponsesTypes getSaveStingValue(char **value, char *messageToUser) {
+Responses getSaveStingValue(char **value, char *messageToUser) {
     printf("%s", messageToUser);
     *value = getLine();
     return value == NULL ? EXIT_RESPONSE : SUCCESS_RESPONSE;
 }
 
-ResponsesTypes getSaveIntValue(int *value, char *messageToUser) {
+Responses getSaveIntValue(int *value, char *messageToUser) {
     int res;
     printf("%s", messageToUser);
     do {

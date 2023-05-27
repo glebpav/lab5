@@ -3,7 +3,7 @@
 #include <string.h>
 #include "stdio.h"
 
-char *getResponseMessage(ResponsesTypes responsesTypes) {
+char *getResponseMessage(Responses responsesTypes) {
     switch (responsesTypes) {
         case NOT_INT_VALUE_EXCEPTION:
             return strdup("given input is not integer");
@@ -30,7 +30,7 @@ char *getResponseMessage(ResponsesTypes responsesTypes) {
     }
 }
 
-void throughException(ResponsesTypes exceptionType) {
+void throughException(Responses exceptionType) {
     char *errorMessage = getResponseMessage(exceptionType);
     printf("\033[1;31m");
     printf("ERROR: %s\n", errorMessage);
@@ -38,7 +38,7 @@ void throughException(ResponsesTypes exceptionType) {
     free(errorMessage);
 }
 
-void printSuccessMessage(ResponsesTypes response) {
+void printSuccessMessage(Responses response) {
     char *responseMessage = getResponseMessage(response);
     printf("\033[1;32m");
     printf("Message: %s\n", responseMessage);
@@ -46,7 +46,7 @@ void printSuccessMessage(ResponsesTypes response) {
     free(responseMessage);
 }
 
-bool isException(ResponsesTypes response) {
+bool isException(Responses response) {
     if (response == NOT_INT_VALUE_EXCEPTION
         || response == INPUT_NOT_IN_RANGE_EXCEPTION
         || response == TABLE_OVERFLOW_EXCEPTION
