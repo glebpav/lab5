@@ -1,7 +1,6 @@
 #ifndef LAB4B_DIALOGCONFIG3_H
 #define LAB4B_DIALOGCONFIG3_H
 
-#include "../../../controller/ComputerNetworkGraph.h"
 #include "../ComputerModifications.h"
 
 Responses (*computerMdfCommandsPtr[])(ComputerNetworkGraph *) = {

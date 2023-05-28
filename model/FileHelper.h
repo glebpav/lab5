@@ -2,7 +2,7 @@
 #define LAB4A_FILEHELPER_H
 
 #include "../ResponsesHandler.h"
-#include "../controller/ComputerNetworkGraph.h"
+
 
 // TODO: make implementation of reading from file
 

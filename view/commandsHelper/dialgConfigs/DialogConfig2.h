@@ -1,7 +1,6 @@
 #ifndef LAB4B_DIALOGCONFIG2_H
 #define LAB4B_DIALOGCONFIG2_H
 
-#include "../../../controller/ComputerNetworkGraph.h"
 #include "../GraphInteraction.h"
 
 const char *graphInteractionsMsgs[] = {

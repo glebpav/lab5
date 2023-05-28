@@ -1,8 +1,8 @@
-#ifndef LAB4A_BINTREE_H
-#define LAB4A_BINTREE_H
-
 #include "../ResponsesHandler.h"
 #include "../model/MyVector.h"
+
+#ifndef LAB4B_COMPGRAPH
+#define LAB4B_COMPGRAPH
 
 typedef struct Computer {
     char *name;
@@ -48,4 +48,4 @@ Responses printMatrix(ComputerNetworkGraph *graph);
 
 Responses printAdjacencyList(ComputerNetworkGraph *graph);
 
-#endif //LAB4A_BINTREE_H
+#endif

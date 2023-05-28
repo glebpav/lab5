@@ -3,7 +3,6 @@
 #include "FileHelper.h"
 #include "string.h"
 #include "stdlib.h"
-#include "../controller/ComputerNetworkGraph.h"
 
 /*Responses readFile(char *fileName, char ***outputString, int *outputStringLen) {
     FILE *fp;

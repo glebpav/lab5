@@ -1,7 +1,6 @@
 #ifndef LAB4A_COMMANDHELPER_H
 #define LAB4A_COMMANDHELPER_H
 
-#include "../../ResponsesHandler.h"
 #include "../../controller/ComputerNetworkGraph.h"
 
 Responses openNetworkInteractionMenuD(ComputerNetworkGraph *graph);

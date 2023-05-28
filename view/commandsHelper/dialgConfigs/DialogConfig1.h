@@ -1,7 +1,6 @@
 #ifndef LAB4B_DIALOGCONFIG1_H
 #define LAB4B_DIALOGCONFIG1_H
 
-#include "../../../controller/ComputerNetworkGraph.h"
 #include "../MainMenu.h"
 
 const char *mainCommandMsgs[] = {

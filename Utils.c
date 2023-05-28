@@ -11,7 +11,7 @@ int getInt(int *var) {
 }
 
 char *getLine(void) {
-    char *line = malloc(100), *linep = line;
+    char *line = (char *) malloc(100), *linep = line;
     size_t lenMax = 100, len = lenMax;
     int c;
 
@@ -27,7 +27,7 @@ char *getLine(void) {
 
         if (--len == 0) {
             len = lenMax;
-            char *linen = realloc(linep, lenMax *= 2);
+            char *linen = (char *) realloc(linep, lenMax *= 2);
             if (linen == NULL) {
                 free(linep);
                 return NULL;

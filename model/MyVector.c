@@ -10,14 +10,14 @@ Vector initVector(int typeSize) {
 }
 
 Vector *initVectorPtr(int typeSize) {
-    Vector *vector = calloc(1, sizeof(Vector));
+    Vector *vector = (Vector *) calloc(1, sizeof(Vector));
     vector->typeSize = typeSize;
     return vector;
 }
 
 void addItemToVector(Vector *vector, void *item) {
     vector->arrayLength += 1;
-    vector->array = realloc(vector->array, sizeof(void *) * vector->arrayLength);
+    vector->array = (void **) realloc(vector->array, sizeof(void *) * vector->arrayLength);
     vector->array[vector->arrayLength - 1] = calloc(1, vector->typeSize);
     memcpy(vector->array[vector->arrayLength - 1], item, vector->typeSize);
 }
@@ -29,7 +29,7 @@ void deleteItemFromVector(Vector *vector, int deletingItemIdx) {
     for (int i = deletingItemIdx; i < vector->arrayLength; ++i)
         vector->array[i] = vector->array[i + 1];
 
-    vector->array = realloc(vector->array, sizeof(void *) * vector->arrayLength);
+    vector->array = (void **) realloc(vector->array, sizeof(void *) * vector->arrayLength);
 }
 
 void setItemVector(Vector *vector, void *newData, unsigned idx){
@@ -56,7 +56,8 @@ void destroyVector(Vector *vector) {
  */
 bool isVectorContains(Vector vector, void *data) {
     for (int i = 0; i < vector.arrayLength; ++i) {
-        if (strcmp(vector.array[i], data) == 0) return true;
+        if (strcmp((const char *) vector.array[i], (const char *)
+        data) == 0) return true;
     }
     return false;
 }
