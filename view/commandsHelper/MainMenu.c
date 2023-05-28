@@ -8,10 +8,9 @@
 #include "../GrpahVisHelper.h"
 #include "../DialogHelper.h"
 #include "GraphInteraction.h"
-#include "consts2.h"
+#include "dialgConfigs/DialogConfig2.h"
 
 Responses openNetworkInteractionMenuD(ComputerNetworkGraph *graph) {
-
     int operationIdx;
     Responses response;
 

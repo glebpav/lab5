@@ -1,8 +1,8 @@
-#ifndef LAB4B_CONSTS2_H
-#define LAB4B_CONSTS2_H
+#ifndef LAB4B_DIALOGCONFIG2_H
+#define LAB4B_DIALOGCONFIG2_H
 
-#include "../../controller/ComputerNetworkGraph.h"
-#include "GraphInteraction.h"
+#include "../../../controller/ComputerNetworkGraph.h"
+#include "../GraphInteraction.h"
 
 const char *graphInteractionsMsgs[] = {
         "Modify computer",
@@ -19,4 +19,4 @@ Responses (*graphIaCommandsPtr[])(ComputerNetworkGraph *) = {
 const int countOfGraphInteractionsMsgs = sizeof(graphInteractionsMsgs) / sizeof(const char *);
 
 
-#endif //LAB4B_CONSTS2_H
+#endif //LAB4B_DIALOGCONFIG2_H

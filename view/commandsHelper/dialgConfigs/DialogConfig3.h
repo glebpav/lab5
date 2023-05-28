@@ -1,10 +1,10 @@
-#ifndef LAB4B_CONSTS3_H
-#define LAB4B_CONSTS3_H
+#ifndef LAB4B_DIALOGCONFIG3_H
+#define LAB4B_DIALOGCONFIG3_H
 
-#include "../../controller/ComputerNetworkGraph.h"
-#include "ComputerModifications.h"
+#include "../../../controller/ComputerNetworkGraph.h"
+#include "../ComputerModifications.h"
 
-Responses (*ComputerMdfCommandsPtr[])(ComputerNetworkGraph *) = {
+Responses (*computerMdfCommandsPtr[])(ComputerNetworkGraph *) = {
         addComputerD,
         deleteComputerD,
         changeComputerNameD,
@@ -23,4 +23,4 @@ const char *computerModificationsMsgs[] = {
 const int countOfComputerMdfMsgs = sizeof(computerModificationsMsgs) / sizeof(const char *);
 
 
-#endif //LAB4B_CONSTS3_H
+#endif //LAB4B_DIALOGCONFIG3_H

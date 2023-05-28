@@ -1,7 +1,7 @@
 #include "controller/ComputerNetworkGraph.h"
 #include "view/DialogHelper.h"
 #include "view/commandsHelper/MainMenu.h"
-#include "view/commandsHelper/consts1.h"
+#include "view/commandsHelper/dialgConfigs/DialogConfig1.h"
 
 int main() {
 

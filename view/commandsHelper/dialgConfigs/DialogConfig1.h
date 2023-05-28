@@ -1,8 +1,8 @@
-#ifndef LAB4B_CONSTS1_H
-#define LAB4B_CONSTS1_H
+#ifndef LAB4B_DIALOGCONFIG1_H
+#define LAB4B_DIALOGCONFIG1_H
 
-#include "../../controller/ComputerNetworkGraph.h"
-#include "MainMenu.h"
+#include "../../../controller/ComputerNetworkGraph.h"
+#include "../MainMenu.h"
 
 const char *mainCommandMsgs[] = {
         "Open network (graph) interactions menu",
@@ -27,4 +27,4 @@ Responses (*mainMenuCommandsPtr[])(ComputerNetworkGraph *) = {
 const int countOfMainMsgs = sizeof(mainCommandMsgs) / sizeof(const char *);
 
 
-#endif //LAB4B_CONSTS1_H
+#endif //LAB4B_DIALOGCONFIG1_H
