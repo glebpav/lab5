@@ -1,6 +1,8 @@
 #ifndef LAB4A_MYVECTOR_H
 #define LAB4A_MYVECTOR_H
 
+#include <stdbool.h>
+
 typedef struct Vector {
     void **array;
     unsigned arrayLength;
@@ -15,9 +17,11 @@ void addItemToVector(Vector *vector, void *item);
 
 void deleteItemFromVector(Vector *vector, int deletingItemIdx);
 
-void setItemVector(Vector *vector, void *data);
+void setItemVector(Vector *vector, void *data, unsigned idx);
 
 void* getItemFromVector(Vector vector, int itemIdx);
+
+bool isVectorContains(Vector vector, void *data);
 
 void destroyVector(Vector *vector);
 

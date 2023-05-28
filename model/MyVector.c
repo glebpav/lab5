@@ -32,8 +32,9 @@ void deleteItemFromVector(Vector *vector, int deletingItemIdx) {
     vector->array = realloc(vector->array, sizeof(void *) * vector->arrayLength);
 }
 
-void setItemVector(Vector *vector, void *data){
-
+void setItemVector(Vector *vector, void *newData, unsigned idx){
+    if (vector->arrayLength <= idx) return;
+    vector->array[idx] = newData;
 }
 
 void *getItemFromVector(Vector vector, int itemIdx) {
@@ -48,4 +49,14 @@ void destroyVector(Vector *vector) {
     vector->arrayLength = 0;
     free(vector->array);
     free(vector);
+}
+
+/*
+ * Works only for direct data types array (int, double, char ... )
+ */
+bool isVectorContains(Vector vector, void *data) {
+    for (int i = 0; i < vector.arrayLength; ++i) {
+        if (strcmp(vector.array[i], data) == 0) return true;
+    }
+    return false;
 }

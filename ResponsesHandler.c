@@ -5,6 +5,10 @@
 
 char *getResponseMessage(Responses responsesTypes) {
     switch (responsesTypes) {
+        case NOT_UNSIGNED_VALUE_EXCEPTION:
+            return strdup("given input is not unsigned");
+        case PRIMARY_VALUE_DUPLICATION:
+            return strdup("given input duplicates existing value");
         case NOT_INT_VALUE_EXCEPTION:
             return strdup("given input is not integer");
         case INPUT_NOT_IN_RANGE_EXCEPTION:
@@ -16,7 +20,7 @@ char *getResponseMessage(Responses responsesTypes) {
         case INCORRECT_FILE_FORMAT_EXCEPTION:
             return strdup("file format is incorrect");
         case UNKNOWN_KEY_EXCEPTION:
-            return strdup("given key or version doesn't exist");
+            return strdup("given key doesn't exist");
         case EMPTY_FIELD_EXCEPTION:
             return strdup("passed field is empty");
         case COMMON_EXCEPTION:
@@ -53,7 +57,9 @@ bool isException(Responses response) {
         || response == NO_SUCH_FILE_EXCEPTION
         || response == INCORRECT_FILE_FORMAT_EXCEPTION
         || response == UNKNOWN_KEY_EXCEPTION
-        || response == FILE_EXCEPTION)
+        || response == FILE_EXCEPTION
+        || response == NOT_UNSIGNED_VALUE_EXCEPTION
+        || response == PRIMARY_VALUE_DUPLICATION)
         return true;
     return false;
 }

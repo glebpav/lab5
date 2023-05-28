@@ -26,6 +26,7 @@ Responses openNetworkInteractionMenuD(ComputerNetworkGraph *graph) {
 }
 
 Responses printGraphAdjacencyListD(ComputerNetworkGraph *graph) {
+    printAdjacencyList(graph);
     return SUCCESS_RESPONSE;
 }
 

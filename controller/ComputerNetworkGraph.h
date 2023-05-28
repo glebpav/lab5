@@ -13,7 +13,7 @@ typedef struct Connection {
     char *computerName1;
     char *computerName2;
     Vector *accessedPorts;
-    unsigned transmissionDelay;
+    unsigned int transmissionDelay;
 } Connection;
 
 typedef struct ComputerNetworkGraph {

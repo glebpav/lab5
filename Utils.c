@@ -44,19 +44,34 @@ char *getLine(void) {
 }
 
 Responses getSaveStingValue(char **value, char *messageToUser) {
-    printf("%s", messageToUser);
+    printf("%s>> ", messageToUser);
     *value = getLine();
     return value == NULL ? EXIT_RESPONSE : SUCCESS_RESPONSE;
 }
 
 Responses getSaveIntValue(int *value, char *messageToUser) {
     int res;
-    printf("%s", messageToUser);
+    printf("%s>> ", messageToUser);
     do {
         res = getInt(value);
         if (res == 0) throughException(NOT_INT_VALUE_EXCEPTION);
         else if (res == EOF) return EXIT_RESPONSE;
     } while (res <= 0);
+    return SUCCESS_RESPONSE;
+}
+
+Responses getSaveUnsignedValue(unsigned int *unsignedValue, char *messageToUser) {
+    int res;
+    int value = 0;
+    printf("%s", messageToUser);
+    do {
+        printf(">> ");
+        res = getInt(&value);
+        if (res == EOF) return EXIT_RESPONSE;
+        else if (value < 0) throughException(NOT_UNSIGNED_VALUE_EXCEPTION), res = 0;
+        else if (res == 0) throughException(NOT_INT_VALUE_EXCEPTION);
+    } while (res <= 0);
+    *unsignedValue = value;
     return SUCCESS_RESPONSE;
 }
 
@@ -70,7 +85,7 @@ int strcmpForSubStr(char *subStr, char *checkingStr) {
     return 0;
 }
 
-Vector *getStringDifference(char *str1, char *str2) {
+Vector *getStringDifference(const char *str1, const char *str2) {
     Vector *difference = initVectorPtr(sizeof(int));
     // printf("str1 = %s\n", str1);
     // printf("str2 = %s\n", str2);

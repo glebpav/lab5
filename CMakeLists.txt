@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24.2)
-project(lab4b C)
+project(lab5 C)
 
 set(CMAKE_C_STANDARD 11)
 
