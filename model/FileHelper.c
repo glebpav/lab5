@@ -3,8 +3,10 @@
 #include "FileHelper.h"
 #include "string.h"
 #include "stdlib.h"
+#include "../controller/ComputerNetworkGraph.h"
+#include "../Utils.h"
 
-/*Responses readFile(char *fileName, char ***outputString, int *outputStringLen) {
+Responses readFile(char *fileName, Vector *outputStrVector) {
     FILE *fp;
 
     char *prefix = strdup("files/");
@@ -13,6 +15,7 @@
     filePath = strcat(filePath, fileName);
 
     free(prefix);
+    // printf("prefix: %s\n", filePath);
     if ((fp = fopen(filePath, "r+")) == NULL) {
         free(filePath);
         return NO_SUCH_FILE_EXCEPTION;
@@ -20,15 +23,14 @@
     free(filePath);
 
     char *item = calloc(128, sizeof(char));
-    *outputStringLen = 0;
 
     while (1) {
         int ret = fscanf(fp, "%s", item);
         if (ret == 1) {
-            *outputString = realloc(*outputString, (1 + *outputStringLen) * sizeof(char*));
-            // (*outputString)[*outputStringLen] = calloc(1,(1 + strlen(item)) * sizeof(char));
-            (*outputString)[*outputStringLen] = strdup(item);
-            *outputStringLen += 1;
+            char *itemPtr = strdup(item);
+            // printf("-%s\\n\n", itemPtr);
+            addItemToVector(outputStrVector, &itemPtr);
+            // memset(item, 0, 128 *sizeof(char));
         } else if (errno != 0) {
             perror("scanf:");
             break;
@@ -46,18 +48,58 @@
     return SUCCESS_RESPONSE;
 }
 
-Responses getTreeFromString(char **stringArray, int stringArrayLen, ScapeGoatTree *tree) {
+Responses getComputesFromStr(Vector *stringArray, Vector *computersArray) {
+    char *computerName;
+    char *portIdx;
 
-    //
+    if (stringArray->arrayLength % 2 == 1) return INCORRECT_FILE_FORMAT_EXCEPTION;
+
+    for (int i = 0; i < stringArray->arrayLength; i += 2) {
+        computerName = strdup(*((char **) getItemFromVector(*stringArray, i)));
+        portIdx = *((char **) getItemFromVector(*stringArray, i + 1));
+        Computer computer = {.name = computerName, .connectionsList = NULL};
+        if (isUnsignedNum(portIdx)) computer.portIdx = atoi(portIdx);
+        else computer.portIdx = 0;
+        addItemToVector(computersArray, &computer);
+    }
+
     return SUCCESS_RESPONSE;
-}*/
+}
 
+Responses getConnectionsFromStr(Vector *stringArray, Vector *connectionsArray) {
+    char *computerName1;
+    char *computerName2;
+    char *transmissionDelay;
+    char *accessedPorts;
 
+    if (stringArray->arrayLength % 4 != 0) return INCORRECT_FILE_FORMAT_EXCEPTION;
 
+    for (int i = 0; i < stringArray->arrayLength; i += 4) {
+        computerName1 = strdup(*(char **) (getItemFromVector(*stringArray, i)));
+        computerName2 = strdup(*(char **) (getItemFromVector(*stringArray, i + 1)));
+        transmissionDelay = strdup(*(char **) (getItemFromVector(*stringArray, i + 2)));
+        accessedPorts = strdup(*(char **)(getItemFromVector(*stringArray, i + 3)));
+        Vector *portsArray = initVectorPtr(sizeof(unsigned int));
 
+        char *port = strtok(accessedPorts, " ");
+        while (port != NULL) {
+            addItemToVector(portsArray, port);
+            port = strtok(accessedPorts, NULL);
+        }
 
+        Connection connection1 = {
+                .destinationComputer = computerName1,
+                .secondComputer = computerName2,
+                .accessedPorts = portsArray
+        };
 
+        if (isUnsignedNum(transmissionDelay)) {
+            connection1.transmissionDelay = atoi(transmissionDelay);
+        } else {
+            connection1.transmissionDelay = 0;
+        }
+        addItemToVector(connectionsArray, &connection1);
+    }
 
-
-
-
+    return SUCCESS_RESPONSE;
+}

@@ -8,6 +8,7 @@ Responses (*computerMdfCommandsPtr[])(ComputerNetworkGraph *) = {
         deleteComputerD,
         changeComputerNameD,
         changeComputerPortIdxD,
+        readComputersFromFileD,
         returnBack3D
 };
 
@@ -16,6 +17,7 @@ const char *computerModificationsMsgs[] = {
         "Delete computer",
         "Change computer name",
         "Change computer port idx",
+        "Read computers from file",
         "Return back"
 };
 

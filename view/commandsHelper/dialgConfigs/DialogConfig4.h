@@ -9,6 +9,7 @@ Responses (*connectionMdfCommandsPtr[])(ComputerNetworkGraph *) = {
         changeConnectionDelayD,
         addConnectionPortD,
         deleteConnectionPortD,
+        readConnectionsFromFileD,
         returnBack2D
 };
 
@@ -18,6 +19,7 @@ const char *connectionModificationsMsgs[] = {
         "Change connection delay",
         "Add connection port",
         "Delete connection port",
+        "Read connections from file",
         "Return back"
 };
 

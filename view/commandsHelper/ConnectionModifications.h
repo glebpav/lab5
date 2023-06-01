@@ -13,6 +13,8 @@ Responses addConnectionPortD(ComputerNetworkGraph *graph);
 
 Responses deleteConnectionPortD(ComputerNetworkGraph *graph);
 
+Responses readConnectionsFromFileD(ComputerNetworkGraph *graph);
+
 Responses returnBack2D(ComputerNetworkGraph *graph);
 
 

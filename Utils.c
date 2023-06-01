@@ -98,3 +98,9 @@ Vector *getStringDifference(const char *str1, const char *str2) {
     }
     return difference;
 }
+
+bool isUnsignedNum(const char *inputStr) {
+    for (int i = 0; i < strlen(inputStr); i++)
+        if ((int) inputStr[i] < '0' || (int) inputStr[i] > '9') return false;
+    return true;
+}

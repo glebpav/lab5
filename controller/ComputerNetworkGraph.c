@@ -9,7 +9,6 @@
 ComputerNetworkGraph initComputerNetworkGraph() {
     ComputerNetworkGraph network = {
             initVectorPtr(sizeof(Computer)),
-            initVectorPtr(sizeof(Connection))
     };
     return network;
 }
@@ -27,14 +26,54 @@ Responses addComputer(ComputerNetworkGraph *graph, char *newComputerName, unsign
         }
     }
 
-    Computer computer = {strdup(newComputerName), portIdx};
+    Computer computer = {
+            .name = strdup(newComputerName),
+            .portIdx = portIdx,
+            .connectionsList = initListPtr(sizeof(Connection))
+    };
+
     addItemToVector(graph->computesArray, &computer);
 
     return SUCCESS_RESPONSE;
 }
 
-Responses addConnection(ComputerNetworkGraph *graph, char *computerName1, char *computerName2) {
-    return SUCCESS_RESPONSE;
+Responses addConnection(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned int delay) {
+
+    Computer *computer1 = NULL;
+    Computer *computer2 = NULL;
+
+    if (strcmp(computerName1, computerName2) == 0) return PRIMARY_VALUE_DUPLICATION;
+
+    int usedComputers = 0;
+    for (int i = 0; i < graph->computesArray->arrayLength && usedComputers < 2; ++i) {
+        Computer *computer = (Computer *) getItemFromVector(*(graph->computesArray), i);
+        if (strcmp(computer->name, computerName1) == 0) {
+            computer1 = computer;
+            usedComputers += 1;
+        } else if (strcmp(computer->name, computerName2) == 0) {
+            computer2 = computer;
+            usedComputers += 1;
+        }
+    }
+    if (computer1 != NULL && computer2 != NULL) {
+        Connection connection1 = {
+                delay,
+                strdup(computerName2),
+                initVectorPtr(sizeof(unsigned int))
+        };
+        printf("%p\n", computer1->connectionsList);
+        addItemToList(computer1->connectionsList, &connection1);
+
+        Connection connection2 = {
+                delay,
+                strdup(computerName1),
+                initVectorPtr(sizeof(unsigned int))
+        };
+        printf("%p\n", computer2->connectionsList);
+        addItemToList(computer2->connectionsList, &connection2);
+        return SUCCESS_RESPONSE;
+    }
+    return UNKNOWN_KEY_EXCEPTION;
 }
 
 Responses deleteComputer(ComputerNetworkGraph *graph, char *computerName) {
@@ -50,7 +89,30 @@ Responses deleteComputer(ComputerNetworkGraph *graph, char *computerName) {
     return UNKNOWN_KEY_EXCEPTION;
 }
 
-Responses deleteConnection(ComputerNetworkGraph *graph, char *computerName1, char *computerName2) {
+Responses deleteConnection(ComputerNetworkGraph *graph, Vector *deletingConnectionsArray) {
+
+    Connection *connection = getItemFromVector(*deletingConnectionsArray, 0);
+    char *computerName1 = connection->destinationComputer;
+    char *computerName2 = connection->secondComputer;
+
+    for (int i = 0; i < graph->computesArray->arrayLength; ++i) {
+        Computer *computer = getItemFromVector(*(graph->computesArray), i);
+
+        if (strcmp(computer->name, computerName1) == 0
+            || strcmp(computer->name, computerName2) == 0)
+            continue;
+
+        for (int k = 0; k < deletingConnectionsArray->arrayLength; ++k) {
+            Connection *selectedConnection = (Connection *) getItemFromVector(*deletingConnectionsArray, k);
+            void *responsePtr = deleteItemFromList(computer->connectionsList, selectedConnection);
+            if (responsePtr != NULL) {
+                free(selectedConnection->destinationComputer);
+                free(selectedConnection->secondComputer);
+                if (selectedConnection->accessedPorts) destroyVector(selectedConnection->accessedPorts);
+            }
+        }
+    }
+
     return SUCCESS_RESPONSE;
 }
 
@@ -80,17 +142,45 @@ Responses changeComputerPortIdx(ComputerNetworkGraph *graph, char *computerName,
     return UNKNOWN_KEY_EXCEPTION;
 }
 
-Responses
-changeConnectionDelay(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned newDelay) {
+Responses changeConnectionDelay(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned newDelay) {
     return SUCCESS_RESPONSE;
 }
 
-Responses addConnectionPort(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned newPort) {
-    return SUCCESS_RESPONSE;
+Responses addConnectionPort(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned int newPort) {
+    Computer *computer1 = NULL;
+    Computer *computer2 = NULL;
+
+    if (strcmp(computerName1, computerName2) == 0) return PRIMARY_VALUE_DUPLICATION;
+
+    int usedComputers = 0;
+    for (int i = 0; i < graph->computesArray->arrayLength && usedComputers < 2; ++i) {
+        Computer *computer = (Computer *) getItemFromVector(*(graph->computesArray), i);
+        if (strcmp(computer->name, computerName1) == 0) {
+            computer1 = computer;
+            usedComputers += 1;
+        } else if (strcmp(computer->name, computerName2) == 0) {
+            computer2 = computer;
+            usedComputers += 1;
+        }
+    }
+    if (computer1 != NULL && computer2 != NULL) {
+        for (int i = 0; i < computer1->connectionsList->listLength; ++i) {
+            Connection *connection = getItemFromListByIdx(*(computer1->connectionsList), i);
+            if (strcmp(connection->destinationComputer, computerName2) == 0)
+                addItemToVector(connection->accessedPorts, &newPort);
+        }
+        for (int i = 0; i < computer2->connectionsList->listLength; ++i) {
+            Connection *connection = getItemFromListByIdx(*(computer2->connectionsList), i);
+            if (strcmp(connection->destinationComputer, computerName2) == 0)
+                addItemToVector(connection->accessedPorts, &newPort);
+        }
+
+        return SUCCESS_RESPONSE;
+    }
+    return UNKNOWN_KEY_EXCEPTION;
 }
 
-Responses
-deleteConnectionPort(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned deletingPortIdx) {
+Responses deleteConnectionPort(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned deletingPortIdx) {
     return SUCCESS_RESPONSE;
 }
 
@@ -98,17 +188,44 @@ Responses printMatrix(ComputerNetworkGraph *graph) {
     return SUCCESS_RESPONSE;
 }
 
-Responses printAdjacencyList(ComputerNetworkGraph *graph) {
+void printAdjacencyList(ComputerNetworkGraph *graph) {
 
     if (graph->computesArray->arrayLength == 0) {
         printf("List of computers is empty ((");
-        return SUCCESS_RESPONSE;
+        return;
     }
 
     for (int i = 0; i < graph->computesArray->arrayLength; ++i) {
         Computer *computer = (Computer *) getItemFromVector(*(graph->computesArray), i);
-        printf("[ name = \"%s\"; portIdx = %u ] -> \n", computer->name, computer->portIdx);
+        printf("[ name = \"%s\"; portIdx = %u ] : ", computer->name, computer->portIdx);
+        for (int j = 0; j < computer->connectionsList->listLength; ++j) {
+            Connection *connection = (Connection *) getItemFromListByIdx(*(computer->connectionsList), j);
+            printf("(delay = %u; destComputer = \"%s\") => ", connection->transmissionDelay,
+                   connection->destinationComputer);
+        }
+        printf("NULL\n");
+    }
+}
+
+Vector *findConnections(ComputerNetworkGraph *graph, char *computerName1, char *computerName2) {
+    Vector *connectionsArray = initVectorPtr(sizeof(Connection));
+
+    for (int i = 0; i < graph->computesArray->arrayLength; ++i) {
+        Computer *computer = (Computer *) getItemFromVector(*(graph->computesArray), i);
+
+        if (strcmp(computerName1, computer->name) != 0
+            && strcmp(computerName2, computer->name) != 0)
+            continue;
+
+        for (int j = 0; j < computer->connectionsList->listLength; ++j) {
+            Connection *connection = (Connection *) getItemFromListByIdx(*(computer->connectionsList), j);
+            if (strcmp(connection->destinationComputer, computerName2) == 0 ||
+                strcmp(connection->destinationComputer, computerName1) == 0)
+                addItemToVector(connectionsArray, connection);
+        }
+
     }
 
-    return SUCCESS_RESPONSE;
+    return connectionsArray;
 }
+

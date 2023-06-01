@@ -1,0 +1,6 @@
+home
+8080
+work
+8088
+university
+9090

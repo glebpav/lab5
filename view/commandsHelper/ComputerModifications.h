@@ -11,6 +11,8 @@ Responses changeComputerNameD(ComputerNetworkGraph *graph);
 
 Responses changeComputerPortIdxD(ComputerNetworkGraph *graph);
 
+Responses readComputersFromFileD(ComputerNetworkGraph *graph);
+
 Responses returnBack3D(ComputerNetworkGraph *graph);
 
 
