@@ -14,7 +14,18 @@ ComputerNetworkGraph initComputerNetworkGraph() {
 }
 
 void destroyComputerNetworkGraph(ComputerNetworkGraph *graph) {
-
+    for (int i = 0; i < graph->computesArray->arrayLength; ++i) {
+        Computer *computer = getItemFromVector(*(graph->computesArray), i);
+        for (int j = 0; j < computer->connectionsList->listLength; ++j) {
+            Connection *connection = getItemFromListByIdx(*(computer->connectionsList), j);
+            free(connection->destinationComputer);
+            free(connection->secondComputer);
+            destroyVector(connection->accessedPorts);
+        }
+        destroyList(computer->connectionsList);
+        free(computer->name);
+    }
+    destroyVector(graph->computesArray);
 }
 
 Responses addComputer(ComputerNetworkGraph *graph, char *newComputerName, unsigned portIdx) {
@@ -59,7 +70,8 @@ Responses addConnection(ComputerNetworkGraph *graph, char *computerName1, char *
         Connection connection1 = {
                 delay,
                 strdup(computerName2),
-                initVectorPtr(sizeof(unsigned int))
+                initVectorPtr(sizeof(unsigned int)),
+                strdup(computerName1)
         };
         printf("%p\n", computer1->connectionsList);
         addItemToList(computer1->connectionsList, &connection1);
@@ -67,7 +79,8 @@ Responses addConnection(ComputerNetworkGraph *graph, char *computerName1, char *
         Connection connection2 = {
                 delay,
                 strdup(computerName1),
-                initVectorPtr(sizeof(unsigned int))
+                initVectorPtr(sizeof(unsigned int)),
+                strdup(computerName2)
         };
         printf("%p\n", computer2->connectionsList);
         addItemToList(computer2->connectionsList, &connection2);
@@ -92,27 +105,57 @@ Responses deleteComputer(ComputerNetworkGraph *graph, char *computerName) {
 Responses deleteConnection(ComputerNetworkGraph *graph, Vector *deletingConnectionsArray) {
 
     Connection *connection = getItemFromVector(*deletingConnectionsArray, 0);
-    char *computerName1 = connection->destinationComputer;
-    char *computerName2 = connection->secondComputer;
+    char *computerName1 = strdup(connection->destinationComputer);
+    char *computerName2 = strdup(connection->secondComputer);
+
+    printf("debug: from deletingConnections.c\n");
+
+    for (int i = 0; i < deletingConnectionsArray->arrayLength / 2; ++i) {
+        Connection *connection1 = (Connection *) getItemFromVector(*deletingConnectionsArray, i);
+        Connection *connection2 = (Connection *) getItemFromVector(*deletingConnectionsArray,
+                                                                   i + deletingConnectionsArray->arrayLength / 2);
+
+        // connection1->secondComputer = connection2->destinationComputer;
+        // connection2->secondComputer = connection1->destinationComputer;
+
+        printf(
+                "[%d] - (\"%s\" <=> \"%s\" | delay = %u)\n",
+                i,
+                connection1->destinationComputer,
+                connection2->destinationComputer,
+                connection1->transmissionDelay
+        );
+    }
+
+    printf("comp1: %s\n", computerName1);
+    printf("comp2: %s\n", computerName2);
 
     for (int i = 0; i < graph->computesArray->arrayLength; ++i) {
         Computer *computer = getItemFromVector(*(graph->computesArray), i);
 
-        if (strcmp(computer->name, computerName1) == 0
-            || strcmp(computer->name, computerName2) == 0)
+        if (strcmp(computer->name, computerName1) != 0
+            && strcmp(computer->name, computerName2) != 0)
             continue;
 
         for (int k = 0; k < deletingConnectionsArray->arrayLength; ++k) {
             Connection *selectedConnection = (Connection *) getItemFromVector(*deletingConnectionsArray, k);
-            void *responsePtr = deleteItemFromList(computer->connectionsList, selectedConnection);
-            if (responsePtr != NULL) {
+
+            if (strcmp(selectedConnection->destinationComputer, computer->name) == 0) {
                 free(selectedConnection->destinationComputer);
-                free(selectedConnection->secondComputer);
+                // free(selectedConnection->secondComputer);
                 if (selectedConnection->accessedPorts) destroyVector(selectedConnection->accessedPorts);
+
+                printf("delay: %u\n", selectedConnection->transmissionDelay);
+                deleteItemFromList(computer->connectionsList, selectedConnection);
+
+                deleteItemFromVector(deletingConnectionsArray, k);
+                k -= 1;
             }
         }
     }
 
+    free(computerName1);
+    free(computerName2);
     return SUCCESS_RESPONSE;
 }
 

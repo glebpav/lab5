@@ -81,10 +81,10 @@ Responses getConnectionsFromStr(Vector *stringArray, Vector *connectionsArray) {
         accessedPorts = strdup(*(char **)(getItemFromVector(*stringArray, i + 3)));
         Vector *portsArray = initVectorPtr(sizeof(unsigned int));
 
-        char *port = strtok(accessedPorts, " ");
+        char *port = strtok(accessedPorts, "/");
         while (port != NULL) {
             addItemToVector(portsArray, port);
-            port = strtok(accessedPorts, NULL);
+            port = strtok(NULL, "/");
         }
 
         Connection connection1 = {
@@ -98,6 +98,10 @@ Responses getConnectionsFromStr(Vector *stringArray, Vector *connectionsArray) {
         } else {
             connection1.transmissionDelay = 0;
         }
+
+        free(accessedPorts);
+        free(transmissionDelay);
+        destroyVector(portsArray);
         addItemToVector(connectionsArray, &connection1);
     }
 

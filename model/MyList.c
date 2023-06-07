@@ -34,6 +34,18 @@ void addItemToList(List *list, void *data) {
     newItem->prevListItem = prevItem;
 }
 
+void destroyList(List *list) {
+    if (list == NULL || list->firstElement == NULL) return;
+    ListItem *thisItem = list->firstElement;
+
+    while (thisItem->nextListItem != NULL) {
+        thisItem = thisItem->nextListItem;
+        free(thisItem->prevListItem);
+    }
+    free(thisItem);
+    free(list);
+}
+
 void *deleteItemFromListByIdx(List *list, int deletingItemIdx){
     return false;
 }

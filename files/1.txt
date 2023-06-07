@@ -2,5 +2,5 @@ home
 8080
 work
 8088
-university
+uni
 9090

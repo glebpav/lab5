@@ -78,12 +78,15 @@ Responses readComputersFromFileD(ComputerNetworkGraph *graph) {
         return EXIT_RESPONSE;
 
     Responses response = readFile(fileName, inputStrArray);
+    free(fileName);
+
     if (isException(response)) {
         throughException(response);
         return SUCCESS_RESPONSE;
     }
 
     response = getComputesFromStr(inputStrArray, computerArray);
+    destroyVector(inputStrArray);
     if (isException(response)) {
         throughException(response);
         return SUCCESS_RESPONSE;
@@ -94,6 +97,7 @@ Responses readComputersFromFileD(ComputerNetworkGraph *graph) {
         addComputer(graph, computer->name, computer->portIdx);
     }
 
+    destroyVector(computerArray);
     return SUCCESS_RESPONSE;
 }
 

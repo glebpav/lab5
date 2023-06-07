@@ -3,7 +3,7 @@
 #include "../Utils.h"
 
 int getExitOperationIdx() {
-    return 7;
+    return 6;
 }
 
 int selectOperation(const char *commandsMessages[], int countOfMessages) {

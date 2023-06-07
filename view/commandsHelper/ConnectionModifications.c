@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "ConnectionModifications.h"
 #include "../../Utils.h"
 #include "../../model/FileHelper.h"
@@ -31,7 +33,6 @@ Responses deleteConnectionD(ComputerNetworkGraph *graph) {
         return EXIT_RESPONSE;
 
     Vector *connectionsArray = findConnections(graph, computerName1, computerName2);
-    Vector *deletingConnectionsArray = initVectorPtr(sizeof(Connection));
 
     printf("found connections: %d\n", connectionsArray->arrayLength);
 
@@ -45,8 +46,8 @@ Responses deleteConnectionD(ComputerNetworkGraph *graph) {
             Connection *connection2 = (Connection *) getItemFromVector(*connectionsArray,
                                                                        i + connectionsArray->arrayLength / 2);
 
-            connection1->secondComputer = connection2->destinationComputer;
-            connection2->secondComputer = connection1->destinationComputer;
+            // connection1->secondComputer = strdup(connection2->destinationComputer);
+            // connection2->secondComputer = strdup(connection1->destinationComputer);
 
             printf(
                     "[%d] - (\"%s\" <=> \"%s\" | delay = %u)\n",
@@ -74,25 +75,25 @@ Responses deleteConnectionD(ComputerNetworkGraph *graph) {
         } while (!inRangeStatement);
 
         if (deletingConnectionIdx != -1) {
-            Connection *deletingConnection1 = getItemFromVector(*connectionsArray, deletingConnectionIdx);
-            Connection *deletingConnection2 = getItemFromVector(*connectionsArray, deletingConnectionIdx + connectionsArray->arrayLength / 2);
-            destroyVector(connectionsArray);
-
-            addItemToVector(deletingConnectionsArray, deletingConnection1);
-            addItemToVector(deletingConnectionsArray, deletingConnection2);
+            Vector *deletingConnectionsArray = initVectorPtr(sizeof(Connection));
+            addItemToVector(deletingConnectionsArray, getItemFromVector(*connectionsArray, deletingConnectionIdx));
+            addItemToVector(deletingConnectionsArray, getItemFromVector(*connectionsArray, deletingConnectionIdx +
+                                                                                           connectionsArray->arrayLength /
+                                                                                           2));
+            deleteConnection(graph, deletingConnectionsArray);
+            destroyVector(deletingConnectionsArray);
         } else {
-            deletingConnectionsArray = connectionsArray;
+            deleteConnection(graph, connectionsArray);
         }
-        deleteConnection(graph, connectionsArray);
     } else {
         Connection *connection1 = (Connection *) getItemFromVector(*connectionsArray, 0);
         Connection *connection2 = (Connection *) getItemFromVector(*connectionsArray, 1);
-        connection1->secondComputer = connection2->destinationComputer;
-        connection2->secondComputer = connection1->destinationComputer;
+        // connection1->secondComputer = strdup(connection2->destinationComputer);
+        // connection2->secondComputer = strdup(connection1->destinationComputer);
         deleteConnection(graph, connectionsArray);
     }
 
-    destroyVector(deletingConnectionsArray);
+    destroyVector(connectionsArray);
     return SUCCESS_RESPONSE;
 }
 
@@ -117,6 +118,8 @@ Responses readConnectionsFromFileD(ComputerNetworkGraph *graph) {
         return EXIT_RESPONSE;
 
     Responses response = readFile(fileName, inputStrArray);
+    free(fileName);
+
     if (isException(response)) {
         throughException(response);
         return SUCCESS_RESPONSE;
@@ -141,7 +144,7 @@ Responses readConnectionsFromFileD(ComputerNetworkGraph *graph) {
                 connection->destinationComputer,
                 connection->secondComputer,
                 connection->transmissionDelay
-                );
+        );
         for (int j = 0; j < connection->accessedPorts->arrayLength; ++j) {
             unsigned int portIdx = *((unsigned int *) getItemFromVector(*(connection->accessedPorts), j));
             addConnectionPort(graph, connection->destinationComputer, connection->secondComputer, portIdx);
