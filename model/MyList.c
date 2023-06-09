@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 #include "MyList.h"
 
 List *initListPtr(int typeSize) {
@@ -35,15 +36,23 @@ void addItemToList(List *list, void *data) {
 }
 
 void destroyList(List *list) {
-    if (list == NULL || list->firstElement == NULL) return;
+    if (list == NULL) return;
+    if (list->firstElement == NULL) {
+        free(list);
+        return;
+    }
+
     ListItem *thisItem = list->firstElement;
 
     while (thisItem->nextListItem != NULL) {
         thisItem = thisItem->nextListItem;
+        free(thisItem->prevListItem->data);
         free(thisItem->prevListItem);
     }
+    free(thisItem->data);
     free(thisItem);
     free(list);
+    printf("free of list\n");
 }
 
 void *deleteItemFromListByIdx(List *list, int deletingItemIdx){

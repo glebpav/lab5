@@ -15,9 +15,11 @@ ComputerNetworkGraph initComputerNetworkGraph() {
 
 void destroyComputerNetworkGraph(ComputerNetworkGraph *graph) {
     for (int i = 0; i < graph->computesArray->arrayLength; ++i) {
+        printf("one computer free\n");
         Computer *computer = getItemFromVector(*(graph->computesArray), i);
         for (int j = 0; j < computer->connectionsList->listLength; ++j) {
             Connection *connection = getItemFromListByIdx(*(computer->connectionsList), j);
+            printf("free of connection delay %d\n", connection->transmissionDelay);
             free(connection->destinationComputer);
             free(connection->secondComputer);
             destroyVector(connection->accessedPorts);
@@ -42,6 +44,7 @@ Responses addComputer(ComputerNetworkGraph *graph, char *newComputerName, unsign
             .portIdx = portIdx,
             .connectionsList = initListPtr(sizeof(Connection))
     };
+    printf("+1 list allocation\n");
 
     addItemToVector(graph->computesArray, &computer);
 
@@ -69,7 +72,7 @@ Responses addConnection(ComputerNetworkGraph *graph, char *computerName1, char *
     if (computer1 != NULL && computer2 != NULL) {
         Connection connection1 = {
                 delay,
-                strdup(computerName2),
+                computerName2,
                 initVectorPtr(sizeof(unsigned int)),
                 strdup(computerName1)
         };
@@ -78,7 +81,7 @@ Responses addConnection(ComputerNetworkGraph *graph, char *computerName1, char *
 
         Connection connection2 = {
                 delay,
-                strdup(computerName1),
+                computerName1,
                 initVectorPtr(sizeof(unsigned int)),
                 strdup(computerName2)
         };

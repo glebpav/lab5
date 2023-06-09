@@ -55,12 +55,18 @@ Responses getComputesFromStr(Vector *stringArray, Vector *computersArray) {
     if (stringArray->arrayLength % 2 == 1) return INCORRECT_FILE_FORMAT_EXCEPTION;
 
     for (int i = 0; i < stringArray->arrayLength; i += 2) {
-        computerName = strdup(*((char **) getItemFromVector(*stringArray, i)));
+        computerName = *((char **) getItemFromVector(*stringArray, i));
         portIdx = *((char **) getItemFromVector(*stringArray, i + 1));
         Computer computer = {.name = computerName, .connectionsList = NULL};
         if (isUnsignedNum(portIdx)) computer.portIdx = atoi(portIdx);
         else computer.portIdx = 0;
         addItemToVector(computersArray, &computer);
+
+        if (portIdx != NULL) {
+            printf("free of portIdx\n");
+            free(portIdx);
+            // free(computerName);
+        }
     }
 
     return SUCCESS_RESPONSE;
@@ -75,15 +81,16 @@ Responses getConnectionsFromStr(Vector *stringArray, Vector *connectionsArray) {
     if (stringArray->arrayLength % 4 != 0) return INCORRECT_FILE_FORMAT_EXCEPTION;
 
     for (int i = 0; i < stringArray->arrayLength; i += 4) {
-        computerName1 = strdup(*(char **) (getItemFromVector(*stringArray, i)));
-        computerName2 = strdup(*(char **) (getItemFromVector(*stringArray, i + 1)));
-        transmissionDelay = strdup(*(char **) (getItemFromVector(*stringArray, i + 2)));
-        accessedPorts = strdup(*(char **)(getItemFromVector(*stringArray, i + 3)));
+        computerName1 = *(char **) (getItemFromVector(*stringArray, i));
+        computerName2 = *(char **) (getItemFromVector(*stringArray, i + 1));
+        transmissionDelay = *(char **) (getItemFromVector(*stringArray, i + 2));
+        accessedPorts = *(char **)(getItemFromVector(*stringArray, i + 3));
         Vector *portsArray = initVectorPtr(sizeof(unsigned int));
 
         char *port = strtok(accessedPorts, "/");
         while (port != NULL) {
-            addItemToVector(portsArray, port);
+            unsigned int portIdx = atoi(port);
+            addItemToVector(portsArray, &portIdx);
             port = strtok(NULL, "/");
         }
 
@@ -101,7 +108,7 @@ Responses getConnectionsFromStr(Vector *stringArray, Vector *connectionsArray) {
 
         free(accessedPorts);
         free(transmissionDelay);
-        destroyVector(portsArray);
+        // destroyVector(portsArray);
         addItemToVector(connectionsArray, &connection1);
     }
 

@@ -95,6 +95,8 @@ Responses readComputersFromFileD(ComputerNetworkGraph *graph) {
     for (int i = 0; i < computerArray->arrayLength; ++i) {
         Computer *computer = getItemFromVector(*computerArray, i);
         addComputer(graph, computer->name, computer->portIdx);
+        free(computer->name);
+        destroyList(computer->connectionsList);
     }
 
     destroyVector(computerArray);

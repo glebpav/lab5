@@ -149,8 +149,11 @@ Responses readConnectionsFromFileD(ComputerNetworkGraph *graph) {
             unsigned int portIdx = *((unsigned int *) getItemFromVector(*(connection->accessedPorts), j));
             addConnectionPort(graph, connection->destinationComputer, connection->secondComputer, portIdx);
         }
+        destroyVector(connection->accessedPorts);
     }
 
+    destroyVector(connectionsArray);
+    destroyVector(inputStrArray);
     return SUCCESS_RESPONSE;
 }
 
