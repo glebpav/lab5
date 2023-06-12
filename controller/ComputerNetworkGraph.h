@@ -40,15 +40,21 @@ Responses changeComputerName(ComputerNetworkGraph *graph, char *oldComputerName,
 
 Responses changeComputerPortIdx(ComputerNetworkGraph *graph, char *computerName, unsigned newPortIdx);
 
-Responses changeConnectionDelay(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned newDelay);
+Responses changeConnectionDelay(ComputerNetworkGraph *graph, Connection *connection, unsigned newDelay);
 
 Responses addConnectionPort(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned newPort);
 
+Responses addConnectionPortPtr(Connection *connection, unsigned int connectionPort);
+
 Responses deleteConnectionPort(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned deletingPortIdx);
+
+Responses deleteConnectionPortPtr(Connection *connection, unsigned int deletingPort);
 
 Responses printMatrix(ComputerNetworkGraph *graph);
 
 Vector *findConnections(ComputerNetworkGraph *graph, char *computer1, char *computer2);
+
+Vector *findConnectionsPtr(ComputerNetworkGraph *graph, char *computer1, char *computer2);
 
 void printAdjacencyList(ComputerNetworkGraph *graph);
 

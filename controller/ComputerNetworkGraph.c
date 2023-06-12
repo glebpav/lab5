@@ -113,7 +113,7 @@ Responses deleteConnection(ComputerNetworkGraph *graph, Vector *deletingConnecti
 
     printf("debug: from deletingConnections.c\n");
 
-    for (int i = 0; i < deletingConnectionsArray->arrayLength / 2; ++i) {
+   /* for (int i = 0; i < deletingConnectionsArray->arrayLength / 2; ++i) {
         Connection *connection1 = (Connection *) getItemFromVector(*deletingConnectionsArray, i);
         Connection *connection2 = (Connection *) getItemFromVector(*deletingConnectionsArray,
                                                                    i + deletingConnectionsArray->arrayLength / 2);
@@ -128,7 +128,7 @@ Responses deleteConnection(ComputerNetworkGraph *graph, Vector *deletingConnecti
                 connection2->destinationComputer,
                 connection1->transmissionDelay
         );
-    }
+    }*/
 
     printf("comp1: %s\n", computerName1);
     printf("comp2: %s\n", computerName2);
@@ -143,9 +143,11 @@ Responses deleteConnection(ComputerNetworkGraph *graph, Vector *deletingConnecti
         for (int k = 0; k < deletingConnectionsArray->arrayLength; ++k) {
             Connection *selectedConnection = (Connection *) getItemFromVector(*deletingConnectionsArray, k);
 
+            printf("len is: %u; k is: %d\n", deletingConnectionsArray->arrayLength, k);
+
             if (strcmp(selectedConnection->destinationComputer, computer->name) == 0) {
                 free(selectedConnection->destinationComputer);
-                // free(selectedConnection->secondComputer);
+                free(selectedConnection->secondComputer);
                 if (selectedConnection->accessedPorts) destroyVector(selectedConnection->accessedPorts);
 
                 printf("delay: %u\n", selectedConnection->transmissionDelay);
@@ -188,7 +190,8 @@ Responses changeComputerPortIdx(ComputerNetworkGraph *graph, char *computerName,
     return UNKNOWN_KEY_EXCEPTION;
 }
 
-Responses changeConnectionDelay(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned newDelay) {
+Responses changeConnectionDelay(ComputerNetworkGraph *graph, Connection *connection, unsigned newDelay) {
+    connection->transmissionDelay = newDelay;
     return SUCCESS_RESPONSE;
 }
 
@@ -226,11 +229,36 @@ Responses addConnectionPort(ComputerNetworkGraph *graph, char *computerName1, ch
     return UNKNOWN_KEY_EXCEPTION;
 }
 
-Responses deleteConnectionPort(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned deletingPortIdx) {
+Responses addConnectionPortPtr(Connection *connection, unsigned int connectionPort) {
+    addItemToVector(connection->accessedPorts, &connectionPort);
     return SUCCESS_RESPONSE;
 }
 
+Responses deleteConnectionPort(ComputerNetworkGraph *graph, char *computerName1, char *computerName2, unsigned deletingPortIdx) {
+
+
+    return SUCCESS_RESPONSE;
+}
+
+Responses deleteConnectionPortPtr(Connection *connection, unsigned int deletingPort) {
+    for (int i = 0; i < connection->accessedPorts->arrayLength; i++) {
+        unsigned int * port = getItemFromVector(*(connection->accessedPorts), i);
+        if (*port == deletingPort) {
+            deleteItemFromVector(connection->accessedPorts, i);
+            return SUCCESS_RESPONSE;
+        }
+
+    }
+
+    return UNKNOWN_KEY_EXCEPTION;
+}
+
 Responses printMatrix(ComputerNetworkGraph *graph) {
+
+    for (int i = 0; i < graph; ++i) {
+
+    }
+
     return SUCCESS_RESPONSE;
 }
 
@@ -268,6 +296,28 @@ Vector *findConnections(ComputerNetworkGraph *graph, char *computerName1, char *
             if (strcmp(connection->destinationComputer, computerName2) == 0 ||
                 strcmp(connection->destinationComputer, computerName1) == 0)
                 addItemToVector(connectionsArray, connection);
+        }
+
+    }
+
+    return connectionsArray;
+}
+
+Vector *findConnectionsPtr(ComputerNetworkGraph *graph, char *computerName1, char *computerName2) {
+    Vector *connectionsArray = initVectorPtr(sizeof(Connection *));
+
+    for (int i = 0; i < graph->computesArray->arrayLength; ++i) {
+        Computer *computer = (Computer *) getItemFromVector(*(graph->computesArray), i);
+
+        if (strcmp(computerName1, computer->name) != 0
+            && strcmp(computerName2, computer->name) != 0)
+            continue;
+
+        for (int j = 0; j < computer->connectionsList->listLength; ++j) {
+            Connection *connection = (Connection *) getItemFromListByIdx(*(computer->connectionsList), j);
+            if (strcmp(connection->destinationComputer, computerName2) == 0 ||
+                strcmp(connection->destinationComputer, computerName1) == 0)
+                addItemToVector(connectionsArray, &connection);
         }
 
     }

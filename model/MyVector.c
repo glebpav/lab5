@@ -26,13 +26,15 @@ void deleteItemFromVector(Vector *vector, int deletingItemIdx) {
     if (vector->arrayLength <= 0) return;
     vector->arrayLength -= 1;
 
-    for (int i = deletingItemIdx; i < vector->arrayLength; ++i)
+    free(vector->array[deletingItemIdx]);
+    for (int i = deletingItemIdx; i < vector->arrayLength; ++i) {
         vector->array[i] = vector->array[i + 1];
+    }
 
     vector->array = (void **) realloc(vector->array, sizeof(void *) * vector->arrayLength);
 }
 
-void setItemVector(Vector *vector, void *newData, unsigned idx){
+void setItemVector(Vector *vector, void *newData, unsigned idx) {
     if (vector->arrayLength <= idx) return;
     vector->array[idx] = newData;
 }
@@ -57,7 +59,8 @@ void destroyVector(Vector *vector) {
 bool isVectorContains(Vector vector, void *data) {
     for (int i = 0; i < vector.arrayLength; ++i) {
         if (strcmp((const char *) vector.array[i], (const char *)
-        data) == 0) return true;
+                data) == 0)
+            return true;
     }
     return false;
 }
