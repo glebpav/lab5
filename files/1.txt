@@ -4,3 +4,7 @@ work
 8088
 uni
 9090
+mephi
+1111
+xsyna
+8080

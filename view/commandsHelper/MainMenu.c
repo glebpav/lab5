@@ -19,9 +19,9 @@ Responses openNetworkInteractionMenuD(ComputerNetworkGraph *graph) {
                 countOfGraphInteractionsMsgs
         );
         response = graphIaCommandsPtr[operationIdx](graph);
-    } while (response != RETURN_BACK_RESPONSE);
+    } while (response != RETURN_BACK_RESPONSE && response != EXIT_RESPONSE);
 
-    return SUCCESS_RESPONSE;
+    return response;
 }
 
 Responses printGraphAdjacencyListD(ComputerNetworkGraph *graph) {
@@ -34,6 +34,16 @@ Responses printMatrixD(ComputerNetworkGraph *graph) {
 }
 
 Responses networkBypassD(ComputerNetworkGraph *graph) {
+
+    char *sourceComputerName;
+
+    if (getSaveStingValue(&sourceComputerName, "Please, input source computer NAME\n") == EXIT_RESPONSE)
+        return EXIT_RESPONSE;
+
+    // BFS
+
+
+
     return SUCCESS_RESPONSE;
 }
 

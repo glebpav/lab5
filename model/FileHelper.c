@@ -63,9 +63,7 @@ Responses getComputesFromStr(Vector *stringArray, Vector *computersArray) {
         addItemToVector(computersArray, &computer);
 
         if (portIdx != NULL) {
-            printf("free of portIdx\n");
             free(portIdx);
-            // free(computerName);
         }
     }
 

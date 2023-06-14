@@ -11,9 +11,9 @@ Responses addConnectionD(ComputerNetworkGraph *graph) {
     char *computerName2;
     unsigned transmissionDelay;
 
-    if (!getSaveStingValue(&computerName1, "Please, input first computer NAME\n")
-        || !getSaveStingValue(&computerName2, "Please, input second computer NAME\n")
-        || !getSaveUnsignedValue(&transmissionDelay, "Please, input transmission DELAY\n"))
+    if (getSaveStingValue(&computerName1, "Please, input first computer NAME\n") == EXIT_RESPONSE
+        || getSaveStingValue(&computerName2, "Please, input second computer NAME\n") == EXIT_RESPONSE
+        || getSaveUnsignedValue(&transmissionDelay, "Please, input transmission DELAY\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
 
     Responses response = addConnection(graph, computerName1, computerName2, transmissionDelay);
@@ -28,8 +28,8 @@ Responses deleteConnectionD(ComputerNetworkGraph *graph) {
     char *computerName1;
     char *computerName2;
 
-    if (!getSaveStingValue(&computerName1, "Please, input first computer NAME\n")
-        || !getSaveStingValue(&computerName2, "Please, input second computer NAME\n"))
+    if (getSaveStingValue(&computerName1, "Please, input first computer NAME\n") == EXIT_RESPONSE
+        || getSaveStingValue(&computerName2, "Please, input second computer NAME\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
 
     Vector *connectionsArray = findConnections(graph, computerName1, computerName2);
@@ -50,9 +50,6 @@ Responses deleteConnectionD(ComputerNetworkGraph *graph) {
             Connection *connection1 = (Connection *) getItemFromVector(*connectionsArray, i);
             Connection *connection2 = (Connection *) getItemFromVector(*connectionsArray,
                                                                        i + connectionsArray->arrayLength / 2);
-
-            // connection1->secondComputer = strdup(connection2->destinationComputer);
-            // connection2->secondComputer = strdup(connection1->destinationComputer);
 
             printf(
                     "[%d] - (\"%s\" <=> \"%s\" | delay = %u)\n",
@@ -91,10 +88,6 @@ Responses deleteConnectionD(ComputerNetworkGraph *graph) {
             deleteConnection(graph, connectionsArray);
         }
     } else {
-        Connection *connection1 = (Connection *) getItemFromVector(*connectionsArray, 0);
-        Connection *connection2 = (Connection *) getItemFromVector(*connectionsArray, 1);
-        // connection1->secondComputer = strdup(connection2->destinationComputer);
-        // connection2->secondComputer = strdup(connection1->destinationComputer);
         deleteConnection(graph, connectionsArray);
     }
 
@@ -108,8 +101,8 @@ Responses changeConnectionDelayD(ComputerNetworkGraph *graph) {
     char *computerName1;
     char *computerName2;
 
-    if (!getSaveStingValue(&computerName1, "Please, input first computer NAME\n")
-        || !getSaveStingValue(&computerName2, "Please, input second computer NAME\n"))
+    if (getSaveStingValue(&computerName1, "Please, input first computer NAME\n") == EXIT_RESPONSE
+        || getSaveStingValue(&computerName2, "Please, input second computer NAME\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
 
     Vector *connectionsArray = findConnectionsPtr(graph, computerName1, computerName2);
@@ -160,7 +153,8 @@ Responses changeConnectionDelayD(ComputerNetworkGraph *graph) {
         } while (!inRangeStatement);
 
         Connection **selectedConnection1 = getItemFromVector(*connectionsArray, deletingConnectionIdx);
-        Connection **selectedConnection2 = getItemFromVector(*connectionsArray, deletingConnectionIdx + connectionsArray->arrayLength / 2);
+        Connection **selectedConnection2 = getItemFromVector(*connectionsArray,
+                                                             deletingConnectionIdx + connectionsArray->arrayLength / 2);
 
         unsigned int newDelay;
         if (!getSaveUnsignedValue(&newDelay, "Please, input new connection DELAY\n"))
@@ -190,8 +184,8 @@ Responses addConnectionPortD(ComputerNetworkGraph *graph) {
     char *computerName1;
     char *computerName2;
 
-    if (!getSaveStingValue(&computerName1, "Please, input first computer NAME\n")
-        || !getSaveStingValue(&computerName2, "Please, input second computer NAME\n"))
+    if (getSaveStingValue(&computerName1, "Please, input first computer NAME\n") == EXIT_RESPONSE
+        || getSaveStingValue(&computerName2, "Please, input second computer NAME\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
 
     Vector *connectionsArray = findConnectionsPtr(graph, computerName1, computerName2);
@@ -226,10 +220,7 @@ Responses addConnectionPortD(ComputerNetworkGraph *graph) {
         }
 
         do {
-            if (!getSaveIntValue(
-                    &deletingConnectionIdx,
-                    "Please, input IDX of connection\n"
-            )) {
+            if (!getSaveIntValue(&deletingConnectionIdx, "Please, input IDX of connection\n")) {
                 destroyVector(connectionsArray);
                 return EXIT_RESPONSE;
             }
@@ -242,10 +233,11 @@ Responses addConnectionPortD(ComputerNetworkGraph *graph) {
         } while (!inRangeStatement);
 
         Connection **selectedConnection1 = getItemFromVector(*connectionsArray, deletingConnectionIdx);
-        Connection **selectedConnection2 = getItemFromVector(*connectionsArray, deletingConnectionIdx + connectionsArray->arrayLength / 2);
+        Connection **selectedConnection2 = getItemFromVector(*connectionsArray,
+                                                             deletingConnectionIdx + connectionsArray->arrayLength / 2);
 
         unsigned int newPort;
-        if (!getSaveUnsignedValue(&newPort, "Please, input new connection DELAY\n"))
+        if (!getSaveUnsignedValue(&newPort, "Please, input new connection PORT\n"))
             return EXIT_RESPONSE;
 
         addConnectionPortPtr(*selectedConnection1, newPort);
@@ -256,7 +248,7 @@ Responses addConnectionPortD(ComputerNetworkGraph *graph) {
         Connection **selectedConnection2 = getItemFromVector(*connectionsArray, 1);
 
         unsigned int newPort;
-        if (!getSaveUnsignedValue(&newPort, "Please, input new connection DELAY\n"))
+        if (!getSaveUnsignedValue(&newPort, "Please, input new connection PORT\n"))
             return EXIT_RESPONSE;
 
         addConnectionPortPtr(*selectedConnection1, newPort);
@@ -268,12 +260,13 @@ Responses addConnectionPortD(ComputerNetworkGraph *graph) {
 }
 
 Responses deleteConnectionPortD(ComputerNetworkGraph *graph) {
+    Responses response;
     int deletingConnectionIdx = -2;
     char *computerName1;
     char *computerName2;
 
-    if (!getSaveStingValue(&computerName1, "Please, input first computer NAME\n")
-        || !getSaveStingValue(&computerName2, "Please, input second computer NAME\n"))
+    if (getSaveStingValue(&computerName1, "Please, input first computer NAME\n") == EXIT_RESPONSE
+        || getSaveStingValue(&computerName2, "Please, input second computer NAME\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
 
     Vector *connectionsArray = findConnectionsPtr(graph, computerName1, computerName2);
@@ -324,13 +317,14 @@ Responses deleteConnectionPortD(ComputerNetworkGraph *graph) {
         } while (!inRangeStatement);
 
         Connection **selectedConnection1 = getItemFromVector(*connectionsArray, deletingConnectionIdx);
-        Connection **selectedConnection2 = getItemFromVector(*connectionsArray, deletingConnectionIdx + connectionsArray->arrayLength / 2);
+        Connection **selectedConnection2 = getItemFromVector(*connectionsArray,
+                                                             deletingConnectionIdx + connectionsArray->arrayLength / 2);
 
         unsigned int deletingPort;
         if (!getSaveUnsignedValue(&deletingPort, "Please, input deleting connection port\n"))
             return EXIT_RESPONSE;
 
-        deleteConnectionPortPtr(*selectedConnection1, deletingPort);
+        response = deleteConnectionPortPtr(*selectedConnection1, deletingPort);
         deleteConnectionPortPtr(*selectedConnection2, deletingPort);
 
     } else {
@@ -341,34 +335,32 @@ Responses deleteConnectionPortD(ComputerNetworkGraph *graph) {
         if (!getSaveUnsignedValue(&deletingPort, "Please, input deleting connection port\n"))
             return EXIT_RESPONSE;
 
-        deleteConnectionPortPtr(*selectedConnection1, deletingPort);
+        response = deleteConnectionPortPtr(*selectedConnection1, deletingPort);
         deleteConnectionPortPtr(*selectedConnection2, deletingPort);
     }
 
+    if (isException(response)) throughException(response);
     destroyVector(connectionsArray);
     return SUCCESS_RESPONSE;
 }
 
 Responses readConnectionsFromFileD(ComputerNetworkGraph *graph) {
     char *fileName;
+
+    if (getSaveStingValue(&fileName, "Please, input FILENAME\n") == EXIT_RESPONSE)
+        return EXIT_RESPONSE;
+
     Vector *inputStrArray = initVectorPtr(sizeof(char *));
     Vector *connectionsArray = initVectorPtr(sizeof(Connection));
-
-    if (!getSaveStingValue(&fileName, "Please, input FILENAME\n"))
-        return EXIT_RESPONSE;
 
     Responses response = readFile(fileName, inputStrArray);
     free(fileName);
 
     if (isException(response)) {
+        destroyVector(inputStrArray);
+        destroyVector(connectionsArray);
         throughException(response);
         return SUCCESS_RESPONSE;
-    }
-
-    char *a;
-    for (int i = 0; i < inputStrArray->arrayLength; i += 1) {
-        a = *((char **) getItemFromVector(*inputStrArray, i));
-        printf("-%s\\n\n", a);
     }
 
     response = getConnectionsFromStr(inputStrArray, connectionsArray);

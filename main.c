@@ -10,8 +10,11 @@ int main() {
     Responses response;
     ComputerNetworkGraph network = initComputerNetworkGraph();
 
-    readComputersFromFileD(&network);
-    readConnectionsFromFileD(&network);
+    if (readComputersFromFileD(&network) == EXIT_RESPONSE
+        || readConnectionsFromFileD(&network) == EXIT_RESPONSE) {
+        destroyComputerNetworkGraph(&network);
+        return 0;
+    }
 
     do {
         operationIdx = selectOperation(mainCommandMsgs, countOfMainMsgs);

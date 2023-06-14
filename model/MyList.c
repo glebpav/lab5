@@ -52,10 +52,9 @@ void destroyList(List *list) {
     free(thisItem->data);
     free(thisItem);
     free(list);
-    printf("free of list\n");
 }
 
-void *deleteItemFromListByIdx(List *list, int deletingItemIdx){
+void *deleteItemFromListByIdx(List *list, int deletingItemIdx) {
     return false;
 }
 
@@ -69,15 +68,22 @@ void *deleteItemFromList(List *list, void *data) {
     while (thisItem != NULL) {
         if (strcmp(thisItem->data, data) == 0) {
             list->listLength -= 1;
-            if (prevItem == NULL) list->firstElement = thisItem->nextListItem;
-            else prevItem->nextListItem = thisItem->nextListItem;
-            deletingItemData = thisItem->data;
-            free(thisItem->data);
-            free(thisItem);
+            if (prevItem == NULL) {
+                list->firstElement = thisItem->nextListItem;
+                if (list->firstElement != NULL) list->firstElement->prevListItem = NULL;
+                free(thisItem->data);
+                free(thisItem);
+            }
+            else {
+                prevItem->nextListItem = thisItem->nextListItem;
+                free(thisItem->data);
+                free(thisItem);
+                if (prevItem->nextListItem != NULL) prevItem->nextListItem->prevListItem = prevItem;
+            }
             break;
         }
-        thisItem = thisItem->nextListItem;
         prevItem = thisItem;
+        thisItem = thisItem->nextListItem;
     }
 
     return deletingItemData;
@@ -87,7 +93,7 @@ void setItemList(List *list, void *data, ListItem *listItem) {
     // TODO: implement this
 }
 
-void* getItemFromListByIdx(List list, int itemIdx) {
+void *getItemFromListByIdx(List list, int itemIdx) {
     int idx = 0;
     ListItem *thisItem = list.firstElement;
     ListItem *prevItem = NULL;

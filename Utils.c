@@ -46,7 +46,7 @@ char *getLine(void) {
 Responses getSaveStingValue(char **value, char *messageToUser) {
     printf("%s>> ", messageToUser);
     *value = getLine();
-    return value == NULL ? EXIT_RESPONSE : SUCCESS_RESPONSE;
+    return *value == NULL ? EXIT_RESPONSE : SUCCESS_RESPONSE;
 }
 
 Responses getSaveIntValue(int *value, char *messageToUser) {

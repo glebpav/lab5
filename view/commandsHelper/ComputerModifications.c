@@ -9,9 +9,9 @@ Responses addComputerD(ComputerNetworkGraph *graph) {
     char *newComputerName;
     unsigned newPortIdx;
 
-    if (!getSaveStingValue(&newComputerName, "Please, input new computer NAME\n"))
+    if (getSaveStingValue(&newComputerName, "Please, input new computer NAME\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
-    if (!getSaveUnsignedValue(&newPortIdx, "Please, input new computer PORT IDX\n"))
+    if (getSaveUnsignedValue(&newPortIdx, "Please, input new computer PORT IDX\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
 
     Responses responses = addComputer(graph, newComputerName, newPortIdx);
@@ -24,7 +24,7 @@ Responses addComputerD(ComputerNetworkGraph *graph) {
 Responses deleteComputerD(ComputerNetworkGraph *graph) {
     char *newComputerName;
 
-    if (!getSaveStingValue(&newComputerName, "Please, input deleting computer NAME\n"))
+    if (getSaveStingValue(&newComputerName, "Please, input deleting computer NAME\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
 
     Responses response = deleteComputer(graph, newComputerName);
@@ -38,9 +38,9 @@ Responses changeComputerNameD(ComputerNetworkGraph *graph) {
     char *oldComputerName;
     char *newComputerName;
 
-    if (!getSaveStingValue(&oldComputerName, "Please, input OLD computer NAME\n"))
+    if (getSaveStingValue(&oldComputerName, "Please, input OLD computer NAME\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
-    if (!getSaveStingValue(&newComputerName, "Please, input NEW computer NAME\n"))
+    if (getSaveStingValue(&newComputerName, "Please, input NEW computer NAME\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
 
     Responses response = changeComputerName(graph, oldComputerName, newComputerName);
@@ -56,9 +56,9 @@ Responses changeComputerPortIdxD(ComputerNetworkGraph *graph) {
     char *computerName;
     unsigned int newPortIdx;
 
-    if (!getSaveStingValue(&computerName, "Please, input computer NAME\n"))
+    if (getSaveStingValue(&computerName, "Please, input computer NAME\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
-    if (!getSaveUnsignedValue(&newPortIdx, "Please, input NEW PORT IDX\n"))
+    if (getSaveUnsignedValue(&newPortIdx, "Please, input NEW PORT IDX\n") == EXIT_RESPONSE)
         return EXIT_RESPONSE;
 
     Responses response = changeComputerPortIdx(graph, computerName, newPortIdx);
@@ -71,16 +71,19 @@ Responses changeComputerPortIdxD(ComputerNetworkGraph *graph) {
 
 Responses readComputersFromFileD(ComputerNetworkGraph *graph) {
     char *fileName;
+    Responses response1 = getSaveStingValue(&fileName, "Please, input FILENAME\n");
+    if (response1 == EXIT_RESPONSE)
+        return EXIT_RESPONSE;
+
     Vector *inputStrArray = initVectorPtr(sizeof(char *));
     Vector *computerArray = initVectorPtr(sizeof(Computer));
-
-    if (!getSaveStingValue(&fileName, "Please, input FILENAME\n"))
-        return EXIT_RESPONSE;
 
     Responses response = readFile(fileName, inputStrArray);
     free(fileName);
 
     if (isException(response)) {
+        destroyVector(inputStrArray);
+        destroyVector(computerArray);
         throughException(response);
         return SUCCESS_RESPONSE;
     }

@@ -13,9 +13,9 @@ Responses openComputerModificationsMenuD(ComputerNetworkGraph *graph){
                 countOfComputerMdfMsgs
         );
         response = computerMdfCommandsPtr[operationIdx](graph);
-    } while (response != RETURN_BACK_RESPONSE);
+    } while (response != RETURN_BACK_RESPONSE && response != EXIT_RESPONSE);
 
-    return SUCCESS_RESPONSE;
+    return response;
 }
 
 Responses openConnectionModificationMenuD(ComputerNetworkGraph *graph){
@@ -28,9 +28,9 @@ Responses openConnectionModificationMenuD(ComputerNetworkGraph *graph){
                 countOfConnectionMdfMsgs
         );
         response = connectionMdfCommandsPtr[operationIdx](graph);
-    } while (response != RETURN_BACK_RESPONSE);
+    } while (response != RETURN_BACK_RESPONSE && response != EXIT_RESPONSE);
 
-    return SUCCESS_RESPONSE;
+    return response;
 }
 
 Responses returnBack1D(ComputerNetworkGraph *graph) {
