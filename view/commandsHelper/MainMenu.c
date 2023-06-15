@@ -49,11 +49,39 @@ Responses networkBypassD(ComputerNetworkGraph *graph) {
     free(sourceComputerName);
     if (coloredComputerArray != NULL) destroyVector(coloredComputerArray);
     if (availableComputersArray != NULL) destroyVector(availableComputersArray);
+    else throughException(EMPTY_FIELD_EXCEPTION);
 
     return SUCCESS_RESPONSE;
 }
 
 Responses findShortestWayD(ComputerNetworkGraph *graph) {
+
+    char *sourceComputerName, *destinationComputerName;
+
+    if (getSaveStingValue(&sourceComputerName, "Please, input source computer NAME\n") == EXIT_RESPONSE
+        || getSaveStingValue(&destinationComputerName, "Please, input destination computer Name\n") == EXIT_RESPONSE)
+        return EXIT_RESPONSE;
+
+    Vector *coloredConnectionsArray = getColoredConnectionsArray(*graph);
+    if (coloredConnectionsArray == NULL) {
+        throughException(COMMON_EXCEPTION);
+        return SUCCESS_RESPONSE;
+    }
+
+    int sourceComputerIdx = getComputerIdx(*graph, sourceComputerName);
+    int destinationComputerIdx = getComputerIdx(*graph, destinationComputerName);
+
+    free(destinationComputerName);
+    free(sourceComputerName);
+
+    Vector *way = getShortestWay(sourceComputerIdx, destinationComputerIdx, graph->computesArray, coloredConnectionsArray);
+
+    destroyVector(coloredConnectionsArray);
+    if (way != NULL) {
+        // TODO: print way
+        destroyVector(way);
+    }
+
     return SUCCESS_RESPONSE;
 }
 

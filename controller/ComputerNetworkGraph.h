@@ -58,4 +58,6 @@ Vector *findConnectionsPtr(ComputerNetworkGraph *graph, char *computer1, char *c
 
 void printAdjacencyList(ComputerNetworkGraph *graph);
 
+int getComputerIdx(ComputerNetworkGraph graph, char *computerName);
+
 #endif

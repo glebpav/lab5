@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include "GraphHelper.h"
+#include "limits.h"
 #include "../model/queue/MyQueue.h"
 
 
@@ -11,6 +12,16 @@ Vector *getColoredComputersArray(ComputerNetworkGraph graph) {
         Computer *computerPtr = getItemFromVector(*(graph.computesArray), i);
         ColoredComputer coloredComputer = {0, computerPtr};
         addItemToVector(coloredComputersArray, &coloredComputer);
+    }
+    return coloredComputersArray;
+}
+
+Vector *getColoredMarkedComputersArray(ComputerNetworkGraph graph) {
+    Vector *coloredComputersArray = initVectorPtr(sizeof(ColoredMarkedComputer));
+    for (int i = 0; i < graph.computesArray->arrayLength; ++i) {
+        Computer *computerPtr = getItemFromVector(*(graph.computesArray), i);
+        // ColoredMarkedComputer coloredComputer = {0, computerPtr};
+        // addItemToVector(coloredComputersArray, &coloredComputer);
     }
     return coloredComputersArray;
 }
@@ -50,7 +61,11 @@ Vector *getAvailableComputers(Vector coloredComputesArray, char *sourceComputerN
         }
     }
 
-    if (startComputerIdx == -1) return NULL;
+    if (startComputerIdx == -1) {
+        destroyVector(availablePorts);
+        destroyVector(availableComputers);
+        return NULL;
+    }
 
     printf("Available ports: ");
     for (int i = 0; i < availablePorts->arrayLength; ++i) {
@@ -64,14 +79,12 @@ Vector *getAvailableComputers(Vector coloredComputesArray, char *sourceComputerN
 
         printf("Accessed port: %u\n", *accessedPort);
 
-        struct queue* q = createQueue();
+        struct Queue *q = createQueue();
         enqueue(q, startComputerIdx);
 
         while (!isEmpty(q)) {
 
-            printQueue(q);
             int currentVertex = dequeue(q);
-
             ColoredComputer *coloredComputer = getItemFromVector(coloredComputesArray, currentVertex);
             ListItem *temp = coloredComputer->computer->connectionsList->firstElement;
 
@@ -87,7 +100,7 @@ Vector *getAvailableComputers(Vector coloredComputesArray, char *sourceComputerN
                     }
                 }
 
-                if (isAccessedConnection == false){
+                if (isAccessedConnection == false) {
                     temp = temp->nextListItem;
                     continue;
                 }
@@ -109,7 +122,7 @@ Vector *getAvailableComputers(Vector coloredComputesArray, char *sourceComputerN
                     if (coloredComputer1->color == 0) {
                         coloredComputer1->color = 1;
 
-                        if (coloredComputer1->computer->portIdx == *accessedPort){
+                        if (coloredComputer1->computer->portIdx == *accessedPort) {
                             printf("%s comp is available\n", coloredComputer1->computer->name);
                             addItemToVector(availableComputers, coloredComputer1->computer);
                         }
@@ -132,5 +145,157 @@ Vector *getAvailableComputers(Vector coloredComputesArray, char *sourceComputerN
     }
 
     destroyVector(availablePorts);
-    return NULL;
+    return availableComputers;
+}
+
+Vector *getColoredConnectionsArray(ComputerNetworkGraph graph) {
+    Vector *coloredConnectionsArray = initVectorPtr(sizeof(SubConnection));
+    for (int i = 0; i < graph.computesArray->arrayLength; ++i) {
+        Computer *computerPtr = getItemFromVector(*(graph.computesArray), i);
+        for (int j = 0; j < computerPtr->connectionsList->listLength; ++j) {
+            Connection *connectionPtr = getItemFromListByIdx(*(computerPtr->connectionsList), j);
+
+            int destinationComputerIdx = -1;
+            for (int k = 0; k < graph.computesArray->arrayLength; ++k) {
+                Computer *computerLocale = getItemFromVector(*(graph.computesArray), k);
+                if (strcmp(computerLocale->name, connectionPtr->destinationComputer) == 0) {
+                    destinationComputerIdx = k;
+                    break;
+                }
+            }
+            if (destinationComputerIdx == -1) {
+                destroyVector(coloredConnectionsArray);
+                return NULL;
+            }
+
+            SubConnection coloredConnection = {i, destinationComputerIdx, connectionPtr};
+            addItemToVector(coloredConnectionsArray, &coloredConnection);
+        }
+    }
+    return coloredConnectionsArray;
+}
+
+int getShortestColoredConnectionIdx(Vector *coloredConnectionsArray) {
+    /*int minDelay;
+    int minDelayConnectionIdx;
+    for (int i = 0; i < coloredConnectionsArray->arrayLength; ++i) {
+        ColoredConnection *coloredConnectionPtr = getItemFromVector(*coloredConnectionsArray, i);
+        if (coloredConnectionPtr->color == 0 && minD)
+    }*/
+}
+
+Vector *
+getShortestWay(int sourceComputerIdx, int destinationComputerIdx, Vector *computersArray, Vector *connectionsArray) {
+
+    unsigned int countOfComputers = computersArray->arrayLength;
+    unsigned int connectionsMatrix[countOfComputers][countOfComputers];
+    unsigned int minDists[countOfComputers];
+    int colors[countOfComputers];
+
+    Computer *destComputerPtr = getItemFromVector(*computersArray, destinationComputerIdx);
+    unsigned int accessedPort = destComputerPtr->portIdx;
+
+    for (int i = 0; i < countOfComputers; ++i) {
+        minDists[i] = INT_MAX;
+        colors[i] = 1;
+        for (int j = 0; j < countOfComputers; ++j) {
+            connectionsMatrix[i][j] = 0;
+            connectionsMatrix[j][i] = 0;
+        }
+    }
+    minDists[sourceComputerIdx] = 0;
+
+    for (int i = 0; i < connectionsArray->arrayLength; ++i) {
+        SubConnection *connection = getItemFromVector(*connectionsArray, i);
+
+        bool isAccessedPort = false;
+        for (int j = 0; j < connection->connection->accessedPorts->arrayLength; ++j) {
+            unsigned int *localeAccessedPort = getItemFromVector(*(connection->connection->accessedPorts), j);
+            // printf("accessedPort: %u / locale port: %u / %d\n", accessedPort, *localeAccessedPort, *localeAccessedPort == accessedPort);
+            if (*localeAccessedPort == accessedPort) {
+                isAccessedPort = true;
+                break;
+            }
+        }
+
+        if (isAccessedPort && (connectionsMatrix[connection->comp1Idx][connection->comp2Idx] == 0 ||
+                               connectionsMatrix[connection->comp1Idx][connection->comp2Idx] >
+                               connection->connection->transmissionDelay)) {
+            connectionsMatrix[connection->comp1Idx][connection->comp2Idx] = connection->connection->transmissionDelay;
+            connectionsMatrix[connection->comp2Idx][connection->comp1Idx] = connection->connection->transmissionDelay;
+        }
+    }
+
+    /*for (int i = 0; i < countOfComputers; ++i) {
+        for (int j = 0; j < countOfComputers; ++j) {
+            printf("%4d", connectionsMatrix[j][i]);
+            // connectionsMatrix[j][i] = 0;
+        }
+        printf("\n");
+    }*/
+
+    unsigned int idxOfMinComputer;
+    unsigned int min;
+    unsigned int temp;
+
+    do {
+        idxOfMinComputer = INT_MAX;
+        min = INT_MAX;
+        for (int i = 0; i < countOfComputers; i++) {
+            if ((colors[i] == 1) && (minDists[i] < min)) {
+                min = minDists[i];
+                idxOfMinComputer = i;
+            }
+        }
+
+        if (idxOfMinComputer != INT_MAX) {
+            for (int i = 0; i < countOfComputers; i++) {
+                if (connectionsMatrix[idxOfMinComputer][i] > 0) {
+                    temp = min + connectionsMatrix[idxOfMinComputer][i];
+                    if (temp < minDists[i]) {
+                        minDists[i] = temp;
+                    }
+                }
+            }
+            colors[idxOfMinComputer] = 0;
+        }
+    } while (idxOfMinComputer < INT_MAX);
+
+    if (minDists[destinationComputerIdx] == INT_MAX) {
+        printf("NO WAAAAAAY ((((\n");
+        return NULL;
+    }
+
+    int ver[countOfComputers];
+    int end = destinationComputerIdx;
+    ver[0] = end;
+    int k = 1;
+    unsigned int weight = minDists[end];
+
+    while (end != sourceComputerIdx) {
+        for (int i = 0; i < countOfComputers; i++) {
+            if (connectionsMatrix[i][end] != 0) {
+                int temp1 = weight - connectionsMatrix[i][end];
+                if (temp1 == minDists[i]) {
+                    weight = temp1;
+                    end = i;
+                    ver[k] = i;
+                    k++;
+                }
+            }
+        }
+    }
+
+    Vector *outWay = initVectorPtr(sizeof(unsigned int));
+    printf("The shortest way: ");
+    for (int i = k - 1; i >= 0; i--) {
+        Computer *computer = getItemFromVector(*computersArray, ver[i]);
+        int computerIdx = ver[i];
+        addItemToVector(outWay, &computerIdx);
+        printf("%s ", computer->name);
+    }
+
+    printf("( sum transmission delay = %u )\n", minDists[destinationComputerIdx]);
+
+    return outWay;
 }

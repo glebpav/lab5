@@ -329,3 +329,10 @@ Vector *findConnectionsPtr(ComputerNetworkGraph *graph, char *computerName1, cha
     return connectionsArray;
 }
 
+int getComputerIdx(ComputerNetworkGraph graph, char *computerName) {
+    for (int i = 0; i < graph.computesArray->arrayLength; ++i) {
+        Computer *computerPtr = getItemFromVector(*(graph.computesArray), i);
+        if (strcmp(computerPtr->name, computerName) == 0) return i;
+    }
+    return -1;
+}

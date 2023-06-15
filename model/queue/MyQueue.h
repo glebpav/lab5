@@ -4,16 +4,21 @@
 #include "../../controller/GraphHelper.h"
 
 #define SIZE 100
-struct queue {
+typedef struct Queue {
     int items[SIZE];
     int front;
     int rear;
-};
-struct queue* createQueue();
-void enqueue(struct queue* q, int);
-int dequeue(struct queue* q);
-void display(struct queue* q);
-int isEmpty(struct queue* q);
-void printQueue(struct queue* q);
+} Queue;
+
+Queue *createQueue();
+
+void enqueue(Queue *q, int);
+
+int dequeue(Queue *q);
+
+
+int isEmpty(Queue *q);
+
+void printQueue(Queue *q);
 
 #endif //LAB5_MYQUEUE_H
