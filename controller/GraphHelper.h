@@ -3,9 +3,13 @@
 
 #include "ComputerNetworkGraph.h"
 
-struct coloredComputer {
+typedef struct ColoredComputer {
     int color;
     Computer *computer;
-};
+} ColoredComputer;
+
+Vector *getColoredComputersArray(ComputerNetworkGraph graph);
+
+Vector *getAvailableComputers(Vector coloredComputesArray, char *sourceComputerName);
 
 #endif //LAB5_GRAPHHELPER_H

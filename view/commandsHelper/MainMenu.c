@@ -8,6 +8,7 @@
 #include "../DialogHelper.h"
 #include "GraphInteraction.h"
 #include "dialgConfigs/DialogConfig2.h"
+#include "../../controller/GraphHelper.h"
 
 Responses openNetworkInteractionMenuD(ComputerNetworkGraph *graph) {
     int operationIdx;
@@ -42,7 +43,12 @@ Responses networkBypassD(ComputerNetworkGraph *graph) {
 
     // BFS
 
+    Vector *coloredComputerArray = getColoredComputersArray(*graph);
+    Vector *availableComputersArray = getAvailableComputers(*coloredComputerArray, sourceComputerName);
 
+    free(sourceComputerName);
+    if (coloredComputerArray != NULL) destroyVector(coloredComputerArray);
+    if (availableComputersArray != NULL) destroyVector(availableComputersArray);
 
     return SUCCESS_RESPONSE;
 }
