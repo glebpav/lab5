@@ -299,3 +299,49 @@ getShortestWay(int sourceComputerIdx, int destinationComputerIdx, Vector *comput
 
     return outWay;
 }
+
+void dfs(bool used[], Vector *g[], Vector *comp, int v) {
+    used[v] = true;
+    addItemToVector(comp, &v);
+    for (int q = 0; q < g[v]->arrayLength; ++q) {
+        int *element = getItemFromVector(*(g[v]), q);
+        int to = *element;
+        if (!used[to])
+            dfs(used, g, comp, to);
+    }
+}
+
+void printComps(ComputerNetworkGraph graph, Vector *computersArray) {
+    unsigned int n = computersArray->arrayLength;
+    Vector *g[computersArray->arrayLength];
+
+    for (int i = 0; i < computersArray->arrayLength; ++i) {
+        g[i] = initVectorPtr(sizeof(int));
+        Computer *computer = getItemFromVector(*computersArray, i);
+        for (int j = 0; j < computer->connectionsList->listLength; ++j) {
+            Connection *connection = getItemFromListByIdx(*(computer->connectionsList), j);
+            int idx = getComputerIdx(graph, connection->destinationComputer);
+            addItemToVector(g[i], &idx);
+        }
+    }
+
+    bool used[computersArray->arrayLength];
+    Vector *comp = initVectorPtr(sizeof(int));
+
+    for (int i = 0; i < n; ++i) used[i] = false;
+
+    for (int i = 0; i < n; ++i) {
+        if (!used[i]) {
+            clearVector(comp);
+            dfs(&used, g, comp, i);
+            printf("Component:");
+            for (int j = 0; j < comp->arrayLength; ++j) {
+                int *compIdx = getItemFromVector(*comp, j);
+                Computer *computer = getItemFromVector(*computersArray, *compIdx);
+                printf(" %s", computer->name);
+            }
+            printf("\n");
+        }
+    }
+
+}

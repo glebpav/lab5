@@ -15,6 +15,11 @@ Vector *initVectorPtr(int typeSize) {
     return vector;
 }
 
+void clearVector(Vector *vector) {
+    for (int i = 0; i < vector->arrayLength; ++i)
+        free(vector->array[i]);
+}
+
 void addItemToVector(Vector *vector, void *item) {
     vector->arrayLength += 1;
     vector->array = (void **) realloc(vector->array, sizeof(void *) * vector->arrayLength);

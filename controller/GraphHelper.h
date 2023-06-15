@@ -30,4 +30,6 @@ Vector *getAvailableComputers(Vector coloredComputesArray, char *sourceComputerN
 
 Vector *getShortestWay(int sourceComputerIdx, int destinationComputerIdx, Vector *computersArray, Vector *connectionsArray);
 
+void printComps(ComputerNetworkGraph graph, Vector *computersArray);
+
 #endif //LAB5_GRAPHHELPER_H

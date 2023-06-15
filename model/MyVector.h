@@ -13,6 +13,8 @@ Vector initVector(int typeSize);
 
 Vector *initVectorPtr(int typeSize);
 
+void clearVector(Vector *vector);
+
 void addItemToVector(Vector *vector, void *item);
 
 void deleteItemFromVector(Vector *vector, int deletingItemIdx);

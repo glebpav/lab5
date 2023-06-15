@@ -14,7 +14,7 @@ char *getResponseMessage(Responses responsesTypes) {
         case INPUT_NOT_IN_RANGE_EXCEPTION:
             return strdup("input value is not int given range");
         case TABLE_OVERFLOW_EXCEPTION:
-            return strdup("table is overflow, clear it first");
+            return strdup("table is overflow, clearVector it first");
         case NO_SUCH_FILE_EXCEPTION:
             return strdup("no such fileDescriptor");
         case INCORRECT_FILE_FORMAT_EXCEPTION:

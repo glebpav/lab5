@@ -86,6 +86,8 @@ Responses findShortestWayD(ComputerNetworkGraph *graph) {
 }
 
 Responses splitToSubnetsD(ComputerNetworkGraph *graph) {
+
+    printComps(*graph, graph->computesArray);
     return SUCCESS_RESPONSE;
 }
 
