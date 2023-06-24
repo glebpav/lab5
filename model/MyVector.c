@@ -18,6 +18,7 @@ Vector *initVectorPtr(int typeSize) {
 void clearVector(Vector *vector) {
     for (int i = 0; i < vector->arrayLength; ++i)
         free(vector->array[i]);
+    vector->arrayLength = 0;
 }
 
 void addItemToVector(Vector *vector, void *item) {

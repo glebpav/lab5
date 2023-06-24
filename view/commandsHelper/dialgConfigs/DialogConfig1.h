@@ -6,7 +6,7 @@
 const char *mainCommandMsgs[] = {
         "Open network (graph) interactions menu",
         "Print network Adjacency list",
-        "Print network matrix",
+        "Print network graph",
         "Make network bypass",
         "Find the fastest way a - b",
         "Split to subnets",

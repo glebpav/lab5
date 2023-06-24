@@ -302,6 +302,7 @@ getShortestWay(int sourceComputerIdx, int destinationComputerIdx, Vector *comput
 
 void dfs(bool **used, Vector *g[], Vector *comp, int v) {
     (*used)[v] = true;
+
     addItemToVector(comp, &v);
     for (int q = 0; q < g[v]->arrayLength; ++q) {
         int *element = getItemFromVector(*(g[v]), q);
@@ -318,12 +319,29 @@ void printComps(ComputerNetworkGraph graph, Vector *computersArray) {
     for (int i = 0; i < computersArray->arrayLength; ++i) {
         g[i] = initVectorPtr(sizeof(int));
         Computer *computer = getItemFromVector(*computersArray, i);
+        // if (computer->connectionsList)
         for (int j = 0; j < computer->connectionsList->listLength; ++j) {
             Connection *connection = getItemFromListByIdx(*(computer->connectionsList), j);
             int idx = getComputerIdx(graph, connection->destinationComputer);
-            addItemToVector(g[i], &idx);
+            bool isUnique = true;
+            for (int k = 0; k < g[i]->arrayLength; ++k) {
+                int *localeIdx = getItemFromVector(*(g[i]), k);
+                if (*localeIdx == idx) {
+                    isUnique = false;
+                    break;
+                }
+            }
+            if (isUnique) addItemToVector(g[i], &idx);
         }
     }
+
+    /*for (int i = 0; i < computersArray->arrayLength; ++i) {
+        for (int j = 0; j < g[i]->arrayLength; ++j) {
+            int *connection = getItemFromVector(*(g[i]), j);
+            printf("%d ", *connection);
+        }
+        printf("\n");
+    }*/
 
     // bool used[computersArray->arrayLength];
     bool ** used = calloc(1, sizeof(bool *));
@@ -334,6 +352,7 @@ void printComps(ComputerNetworkGraph graph, Vector *computersArray) {
 
     for (int i = 0; i < n; ++i) {
         if (!(*used)[i]) {
+            printf("\n");
             clearVector(comp);
             dfs(used, g, comp, i);
             printf("Component:");
@@ -345,6 +364,12 @@ void printComps(ComputerNetworkGraph graph, Vector *computersArray) {
             printf("\n");
         }
     }
+
+    for (int i = 0; i < computersArray->arrayLength; ++i) {
+        destroyVector(g[i]);
+    }
+    destroyVector(comp);
+
     free(*used);
     free(used);
 }
